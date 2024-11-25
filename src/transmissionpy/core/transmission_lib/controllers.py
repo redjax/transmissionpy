@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import logging
 from contextlib import AbstractContextManager
 from pathlib import Path
 import typing as t
 
 from transmission_rpc.client import Client
 from transmission_rpc.torrent import Torrent
+
+log = logging.getLogger(__name__)
 
 class TransmissionRPCController(AbstractContextManager):
     def __init__(
@@ -29,6 +32,8 @@ class TransmissionRPCController(AbstractContextManager):
         self.timeout: int | float | tuple[int | float, int | float] | None = timeout
 
         self.client: Client | None = None
+        
+        self.logger: logging.Logger = log.getChild("TransmissionRPCController")
 
     def __enter__(self) -> "TransmissionRPCController":
         self.client = self._create_client()
@@ -38,8 +43,7 @@ class TransmissionRPCController(AbstractContextManager):
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         if exc_type is not None:
             msg = f"Unhandled exception in TransmissionRPCController: {exc_value}"
-            # log.error(msg)
-            print(f"[ERROR] {msg}")
+            self.logger.error(msg)
 
     def _create_client(self) -> Client:
         """Create and return a configured transmission_rpc.Client object."""
@@ -80,7 +84,7 @@ class TransmissionRPCController(AbstractContextManager):
             msg = Exception(
                 f"Unhandled exception {'moving' if move else 'copying'} torrent data to dest '{dest}'. Details: {exc}"
             )
-            print(f"[ERROR] {msg}")
+            self.logger.error(msg)
 
             raise exc
 
@@ -98,7 +102,7 @@ class TransmissionRPCController(AbstractContextManager):
             return _torrents
         except Exception as exc:
             msg = Exception(f"Unhandled exception getting all torrents. Details: {exc}")
-            print(f"[ERROR] {msg}")
+            self.logger.error(msg)
 
             raise exc
 
@@ -112,7 +116,7 @@ class TransmissionRPCController(AbstractContextManager):
             return _torrents
         except Exception as exc:
             msg = Exception(f"Unhandled exception getting all torrents. Details: {exc}")
-            print(f"[ERROR] {msg}")
+            self.logger.error(msg)
 
             raise exc
 
@@ -127,7 +131,7 @@ class TransmissionRPCController(AbstractContextManager):
             msg = Exception(
                 f"Unhandled exception getting torrent by ID '{torrent_id}'. Details: {exc}"
             )
-            print(f"[ERROR] {msg}")
+            self.logger.error(msg)
 
             raise exc
 
@@ -139,6 +143,7 @@ class TransmissionRPCController(AbstractContextManager):
             self._move_or_copy(ids=ids, dest=dest, move=True)
             return True
         except Exception as exc:
+            log.error(f"({type(exc)}) Error moving torrent data. Details: {exc}")
             return False
 
         # try:
@@ -162,6 +167,7 @@ class TransmissionRPCController(AbstractContextManager):
             self._move_or_copy(ids=ids, dest=dest, move=False)
             return True
         except Exception as exc:
+            log.error(f"({type(exc)}) Error copying torrent data. Details: {exc}")
             return False
         # try:
         #     self.client.move_torrent_data(
@@ -186,7 +192,7 @@ class TransmissionRPCController(AbstractContextManager):
             msg = Exception(
                 f"Unhandled exception getting free space at transmission remote. Details: {exc}"
             )
-            print(f"[ERROR] {msg}")
+            log.error(msg)
 
             raise exc
 
