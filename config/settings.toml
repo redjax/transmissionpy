@@ -1,0 +1,20 @@
+[default]
+log_level = "INFO"
+
+transmission_host = ""
+transmission_ip = ""
+transmission_port = ""
+transmission_username = ""
+transmission_protocol = "http"
+transmission_rpc_url = "/transmission/"
+
+[logging]
+# log_level = "DEBUG"
+
+[transmission]
+# transmission_host = "transmission.domain.tld"
+# transmission_ip = "xxx.xxx.xxx.xxx"
+# transmission_port = 9091
+# transmission_username = "your-transmission-user"
+# transmission_protocol = "https"
+# transmission_rpc_url = "/some/other/rpc/path"
