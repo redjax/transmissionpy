@@ -15,71 +15,54 @@ def demo_all_torrents():
     all_torrents = rpc_client.list_all_torrents()
     log.info(f"Found [{len(all_torrents)}] torrent(s)")
     
+    return all_torrents
+    
 
 def demo_paused_torrents():
     paused_torrents = rpc_client.list_paused_torrents()
     log.info(f"Found[{len(paused_torrents)}] paused torrent(s)")
+    
+    return paused_torrents
 
 
 def demo_stalled_torrents():
     stalled_torrents= rpc_client.list_stalled_torrents()
     log.info(f"Found[{len(stalled_torrents)}] stalled torrent(s)")
     
+    return stalled_torrents
+
+
+def demo_convert_to_metadata(torrent: Torrent):
+    torrent_metadata = rpc_client.utils.convert_torrent_to_torrentmetadata(torrent=torrent)
+    log.debug(f"Torrent metadata: {torrent_metadata}")
+    
+    return torrent_metadata
     
 def demo():
-    demo_all_torrents()
-    demo_paused_torrents()
-    demo_stalled_torrents()
-
-
-def debug_torrent(torrent: Torrent, save_example_json: bool = False):
-    torrent_fields: dict = torrent.fields
-    print(f"Torrent dict keys: {torrent_fields.keys()}")
+    all_torrents = demo_all_torrents()
+    paused_torrents = demo_paused_torrents()
+    stalled_torrents = demo_stalled_torrents()
     
-    field_types = []    
-    for k, v in torrent_fields.items():
-        field_name = k
-        field_val = v
-        field_type = str(type(v))
+    random_torrent = rpc_client.utils.select_random_torrent(torrents_list=all_torrents)
+    random_torrent_metadata = rpc_client.utils.convert_torrent_to_torrentmetadata(torrent=random_torrent)
         
-        _field = {"field": field_name, "type": field_type}
-        field_types.append(_field)
-    print(f"Field types:\n{field_types}")
-    
-    if save_example_json:    
-        with open("torrent_field_types.json", "w") as f:
-            data = json.dumps(field_types, indent=4)
-            
-            f.write(data)
-        
-
-def demo_convert_torrent_to_torrentmetadta(torrent: Torrent):
-    try:
-        torrent_metadata = TorrentMetadataIn.model_validate(torrent.__dict__["fields"])
-    except Exception as exc:
-        msg = f"({type(exc)}) Error validating torrent metadata. Details: {exc}"
-        log.error(msg)
-        
-        raise exc
-    
-    print(f"Torrent:\n{torrent_metadata}")
-
-    return torrent_metadata
-
 
 def main():
-    # demo()
+    demo()
     
-    all_torrents = rpc_client.list_all_torrents()
-    if all_torrents is None or len(all_torrents) == 0:
-        log.warning("List of torrents is empty")
-    else:
-        rand_index = random.randint(0, len(all_torrents) - 1)
-        random_torrent = all_torrents[rand_index]
+    # all_torrents = rpc_client.list_all_torrents()
+    # if all_torrents is None or len(all_torrents) == 0:
+    #     log.warning("List of torrents is empty")
+    # else:
+    #     rand_index = random.randint(0, len(all_torrents) - 1)
+    #     random_torrent = all_torrents[rand_index]
         
-    # debug_torrent(torrent=random_torrent)
-    demo_convert_torrent_to_torrentmetadta(torrent=random_torrent)
+    # # debug_torrent(torrent=random_torrent)
+    # rand_torrent_metadata = rpc_client.utils.convert_torrent_to_torrentmetadata(torrent=random_torrent)
+    # log.debug(f"Converted torrent '{rand_torrent_metadata.name}' to TorrentMetadata object")
     
+    # all_torrent_metadata = rpc_client.utils.convert_multiple_torrents_to_torrentmetadata(torrents=all_torrents)
+    # log.debug(f"Converted [{len(all_torrent_metadata)}] torrent(s) to TorrentMetadata objects")    
 
 
 if __name__ == "__main__":

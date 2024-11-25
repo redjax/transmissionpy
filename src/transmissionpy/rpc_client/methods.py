@@ -10,6 +10,7 @@ from transmissionpy.core.transmission_lib import (
     transmission_settings,
 )
 from transmissionpy.core.utils import df_utils, hash_utils
+from transmissionpy.domain.Transmission import TorrentMetadataIn, TorrentMetadataOut
 
 from loguru import logger as log
 from transmission_rpc import Torrent

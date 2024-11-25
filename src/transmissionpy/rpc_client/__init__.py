@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from . import utils
 from .methods import (
     list_all_torrents,
     list_finished_torrents,
