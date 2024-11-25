@@ -23,7 +23,7 @@ class TorrentFileStatIn(TorrentFileStatBase):
     pass
 
 class TorrentFileStatOut(TorrentFileStatBase):
-    id: int
+    db_id: int
     
 
 class TorrentFileBase(BaseModel):
@@ -35,7 +35,7 @@ class TorrentFileIn(TorrentFileBase):
     pass
 
 class TorrentFileOut(TorrentFileStatBase):
-    id: int
+    db_id: int
 
 class TorrentPeersFromBase(BaseModel):
     fromCache: int = Field(default=0)
@@ -50,7 +50,7 @@ class TorrentPeersFromIn(TorrentPeersFromBase):
     pass
 
 class TorrentPeersFromOut(TorrentPeersFromBase):
-    id: int
+    db_id: int
     
 class TorrentTrackerStatBase(BaseModel):
     announce: str = Field(default="")
@@ -85,7 +85,7 @@ class TorrentTrackerStatIn(TorrentTrackerStatBase):
     pass
 
 class TorrentTrackerStatOut(TorrentTrackerStatBase):
-    id: int
+    db_id: int
 
 
 class TorrentTrackerBase(BaseModel):
@@ -99,7 +99,7 @@ class TorrentTrackerIn(TorrentTrackerBase):
     pass
 
 class TorrentTrackerOut(TorrentTrackerBase):
-    id: int
+    db_id: int
 
 class TorrentMetadataBase(BaseModel):
     activityDate: int = Field(default=0)
@@ -177,7 +177,7 @@ class TorrentMetadataIn(TorrentMetadataBase):
     trackers: list[TorrentTrackerIn] = Field(default_factory=list())
 
 class TorrentMetadataOut(TorrentMetadataBase):
-    id: int
+    db_id: int
     
     fileStats: list[TorrentFileStatOut] = Field(default_factory=list())
     files: list[TorrentFileOut] = Field(default_factory=list())

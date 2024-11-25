@@ -89,3 +89,42 @@ def list_paused_torrents(transmission_settings: TransmissionClientSettings = tra
     paused_torrents: list[Torrent] = [torrent for torrent in all_torrents if torrent.stopped]
     
     return paused_torrents
+
+
+def start_torrent(torrent: Torrent):
+    try:
+        transmission_controller: TransmissionRPCController = transmission_lib.get_transmission_controller()
+    except Exception as exc:
+        msg = f"({type(exc)}) Error getting TransmissionRPCController. Details: {exc}"
+        log.error(msg)
+        
+        raise exc
+    
+    log.info(f"Starting torrent '{torrent.name}'")
+    try:
+        with transmission_controller as torrent_ctl:
+            torrent_ctl.start_torrent(torrent=torrent)
+    except Exception as exc:
+        msg = f"({type(exc)}) Error starting torrent '{torrent.name}'. Details: {exc}"
+        log.error(msg)
+        
+        raise exc
+    
+def stop_torrent(torrent: Torrent):
+    try:
+        transmission_controller: TransmissionRPCController = transmission_lib.get_transmission_controller()
+    except Exception as exc:
+        msg = f"({type(exc)}) Error getting TransmissionRPCController. Details: {exc}"
+        log.error(msg)
+        
+        raise exc
+    
+    log.info(f"Stopping torrent '{torrent.name}'")
+    try:
+        with transmission_controller as torrent_ctl:
+            torrent_ctl.stop_torrent(torrent=torrent)
+    except Exception as exc:
+        msg = f"({type(exc)}) Error stopping torrent '{torrent.name}'. Details: {exc}"
+        log.error(msg)
+        
+        raise exc

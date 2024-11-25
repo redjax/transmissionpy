@@ -8,6 +8,7 @@ import json
 from transmission_rpc import Torrent
 import random
 from transmissionpy.domain.Transmission import TorrentMetadataIn, TorrentMetadataOut
+import time
 
 from loguru import logger as log
 
@@ -37,7 +38,18 @@ def demo_convert_to_metadata(torrent: Torrent):
     log.debug(f"Torrent metadata: {torrent_metadata}")
     
     return torrent_metadata
+
+
+def demo_pause_torrent(torrent: Torrent):
+    log.info(f"Pausing torrent '{torrent.name}'")
+    rpc_client.stop_torrent(torrent=torrent)
     
+    print("Sleeping 5 seconds, go check your Transmission client...")
+    time.sleep(5)
+    
+    log.info(f"Unpausing torrent '{torrent.name}'")
+    rpc_client.start_torrent(torrent=torrent)
+
 def demo():
     all_torrents = demo_all_torrents()
     paused_torrents = demo_paused_torrents()
@@ -45,6 +57,9 @@ def demo():
     
     random_torrent = rpc_client.utils.select_random_torrent(torrents_list=all_torrents)
     random_torrent_metadata = rpc_client.utils.convert_torrent_to_torrentmetadata(torrent=random_torrent)
+    
+    demo_pause_torrent(torrent=random_torrent)
+    
         
 
 def main():

@@ -3,8 +3,8 @@ from __future__ import annotations
 import random
 import typing as t
 
-from transmissionpy.domain.Transmission import TorrentMetadataIn, TorrentMetadataOut
 from transmissionpy.core.utils import list_utils
+from transmissionpy.domain.Transmission import TorrentMetadataIn, TorrentMetadataOut
 
 from loguru import logger as log
 from transmission_rpc import Torrent

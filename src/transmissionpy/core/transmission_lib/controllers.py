@@ -205,3 +205,39 @@ class TransmissionRPCController(AbstractContextManager):
         )
 
         return recently_active
+    
+    def start_torrent(self, torrent: Torrent):
+        try:
+            self.client.start_torrent(torrent.id)
+        except Exception as exc:
+            msg = f"({type(exc)}) Error starting torrent '{torrent.name}'. Details: {exc}"
+            log.error(msg)
+            
+            raise exc
+        
+    def start_torrent_by_id(self, torrent_id: int):
+        try:
+            self.client.start_torrent(torrent_id)
+        except Exception as exc:
+            msg = f"({type(exc)}) Error starting torrent '{torrent_id}'. Details: {exc}"
+            log.error(msg)
+            
+            raise exc
+        
+    def stop_torrent(self, torrent: Torrent):
+        try:
+            self.client.stop_torrent(torrent.id)
+        except Exception as exc:
+            msg = f"({type(exc)}) Error stopping torrent '{torrent.name}'. Details: {exc}"
+            log.error(msg)
+            
+            raise exc
+        
+    def stop_torrent_by_id(self, torrent_id: int):
+        try:
+            self.client.stop_torrent(torrent_id)
+        except Exception as exc:
+            msg = f"({type(exc)}) Error stopping torrent '{torrent_id}'. Details: {exc}"
+            log.error(msg)
+            
+            raise exc
