@@ -61,10 +61,12 @@ def demo_pause_torrent(torrent: Torrent):
 
 def demo_convert_to_df(torrents: list[Torrent], title: str = "Unnamed Dataframe") -> pd.DataFrame:
     torrent_dicts = [t.__dict__["fields"] for t in torrents]
-    df = pd.DataFrame(torrent_dicts)
+    # df = pd.DataFrame(torrent_dicts)
+    df = rpc_client.utils.convert_torrents_to_df(torrents=torrents)
     
     # print(f"{title} DataFrame:\n{df.head(5)}")
     
+    log.info(f"Saving dataframe '{title}'to parquet, json and csv files...")
     df_utils.df_to_parquet(df=df, parquet_output=f"{PQ_OUTPUT_DIR}/{title}.parquet")
     df_utils.df_to_json(df=df, json_output=f"{JSON_OUTPUT_DIR}/{title}.json")
     df_utils.df_to_csv(df=df, csv_output=f"{OUTPUT_DIR}/{title}.csv")
@@ -82,6 +84,7 @@ def demo():
     
     # demo_pause_torrent(torrent=random_torrent)
     
+    log.info("Convering combined all, paused, stalled, and finished torrents to dataframe")
     demo_convert_to_df(torrents=all_torrents, title="All Torrents")
     demo_convert_to_df(torrents=paused_torrents, title="Paused Torrents")
     demo_convert_to_df(torrents=stalled_torrents, title="Stalled Torrents")

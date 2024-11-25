@@ -5,9 +5,11 @@ import typing as t
 
 from transmissionpy.core.utils import list_utils
 from transmissionpy.domain.Transmission import TorrentMetadataIn, TorrentMetadataOut
+from transmissionpy.core.utils import df_utils
 
 from loguru import logger as log
 from transmission_rpc import Torrent
+import pandas as pd
 
 def convert_torrent_to_torrentmetadata(torrent: Torrent):
     if torrent is None:
@@ -49,3 +51,30 @@ def select_random_torrent(torrents_list: list[t.Union[Torrent, TorrentMetadataIn
     random_torrent = list_utils.get_random_item(torrents_list)
     
     return random_torrent
+
+
+def convert_torrents_to_df(torrents: list[t.Union[Torrent, TorrentMetadataIn, TorrentMetadataOut]] = None) -> pd.DataFrame:
+    if torrents is None or (isinstance(torrents, list) and len(torrents) == 0):
+        raise ValueError("torrents list must not be empty")
+    if not isinstance(torrents, list):
+        raise TypeError(f"Invalid type for torrents: ({type(torrents)}). Must be a list of transmission_rpc.Torrent objects")
+    
+    _torrents: list[dict] = []
+    
+    for t in torrents:
+        if isinstance(t, Torrent):
+            t_dict = t.__dict__["fields"]
+            _torrents.append(t_dict)
+        elif isinstance(t, (TorrentMetadataIn, TorrentMetadataOut)):
+            t_dict = t.model_dump()
+            _torrents.append(t_dict)
+
+    try:
+        df = pd.DataFrame(_torrents)
+        
+        return df
+    except Exception as exc:
+        msg = f"({type(exc)}) Error creating dataframe from torrent list. Details: {exc}"
+        log.error(msg)
+        
+        raise exc
