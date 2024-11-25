@@ -4,7 +4,7 @@ import random
 import typing as t
 
 from transmissionpy.domain.Transmission import TorrentMetadataIn, TorrentMetadataOut
-from transmissionpy.utils import list_utils
+from transmissionpy.core.utils import list_utils
 
 from loguru import logger as log
 from transmission_rpc import Torrent
