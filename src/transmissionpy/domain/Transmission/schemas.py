@@ -1,8 +1,17 @@
-from loguru import logger as log
+from __future__ import annotations
 
 from decimal import Decimal
-from pydantic import BaseModel, Field, field_validator, ValidationError, computed_field, ConfigDict
 import typing as t
+
+from loguru import logger as log
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    ValidationError,
+    computed_field,
+    field_validator,
+)
 
 class TorrentFileStatBase(BaseModel):
     bytesCompleted: int = Field(default=0)

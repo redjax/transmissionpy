@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from loguru import logger as log
-
 import hashlib
 
+from loguru import logger as log
 
 def get_hash_from_str(input_str: str = None, encoding: str = "utf-8") -> str:
     """Return a hashed version of an input string.

@@ -1,12 +1,17 @@
-from loguru import logger as log
+from __future__ import annotations
 
-import typing as t
 import json
+import typing as t
 
 from transmissionpy.core import transmission_lib
+from transmissionpy.core.transmission_lib import (
+    TransmissionClientSettings,
+    TransmissionRPCController,
+    transmission_settings,
+)
 from transmissionpy.core.utils import df_utils, hash_utils
-from transmissionpy.core.transmission_lib import transmission_settings, TransmissionClientSettings, TransmissionRPCController
 
+from loguru import logger as log
 from transmission_rpc import Torrent
 
 def write_torrent_to_json(torrent: Torrent, output: str):

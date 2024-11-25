@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import logging
 from contextlib import AbstractContextManager
+import logging
 from pathlib import Path
 import typing as t
 
