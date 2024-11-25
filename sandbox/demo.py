@@ -63,15 +63,12 @@ def demo_convert_to_df(torrents: list[Torrent], title: str = "Unnamed Dataframe"
     torrent_dicts = [t.__dict__["fields"] for t in torrents]
     df = pd.DataFrame(torrent_dicts)
     
-    print(f"{title} DataFrame:\n{df.head(5)}")
+    # print(f"{title} DataFrame:\n{df.head(5)}")
     
-    try:
-        df.to_parquet(path=f"{PQ_OUTPUT_DIR}/{title}.parquet", index=False, engine="fastparquet")
-    except Exception as exc:
-        msg = f"({type(exc)}) Error saving dataframe to parquet file '{PQ_OUTPUT_DIR}/{title}.parquet'. Details: {exc}"
-        log.error(msg)
-        
-        raise exc
+    df_utils.df_to_parquet(df=df, parquet_output=f"{PQ_OUTPUT_DIR}/{title}.parquet")
+    df_utils.df_to_json(df=df, json_output=f"{JSON_OUTPUT_DIR}/{title}.json")
+    df_utils.df_to_csv(df=df, csv_output=f"{OUTPUT_DIR}/{title}.csv")
+
 
 
 def demo():
