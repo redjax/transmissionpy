@@ -1,7 +1,9 @@
-import typing as t
-from dynaconf import Dynaconf
+from __future__ import annotations
 
 from dataclasses import dataclass, field
+import typing as t
+
+from dynaconf import Dynaconf
 
 TRANSMISSION_SETTINGS = Dynaconf(environments=True, env="transmission", envvar_prefix="TRANSMISSION", settings_files=["settings.toml", ".secrets.toml"])
 

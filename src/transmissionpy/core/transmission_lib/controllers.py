@@ -1,6 +1,9 @@
-import typing as t
-from pathlib import Path
+from __future__ import annotations
+
 from contextlib import AbstractContextManager
+from pathlib import Path
+import typing as t
+
 from transmission_rpc.client import Client
 from transmission_rpc.torrent import Torrent
 

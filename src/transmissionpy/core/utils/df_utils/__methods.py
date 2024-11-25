@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pandas as pd
 
 def set_pandas_display_opts(max_rows: int | None = None, max_columns: int | None = None, max_colwidth: int | None = None, max_width: int | None = None) -> None:

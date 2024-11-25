@@ -1,3 +1,5 @@
-from .settings import TransmissionClientSettings, transmission_settings
+from __future__ import annotations
+
 from .controllers import TransmissionRPCController
-from .methods import get_transmission_controller, get_transmission_client, get_torrents
+from .methods import get_torrents, get_transmission_client, get_transmission_controller
+from .settings import TransmissionClientSettings, transmission_settings

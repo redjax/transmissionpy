@@ -1,17 +1,15 @@
 from __future__ import annotations
 
 import random
-
 import typing as t
+
+from .controllers import TransmissionRPCController
+from .settings import TRANSMISSION_SETTINGS, TransmissionClientSettings
 
 from dynaconf import LazySettings
 from loguru import logger as log
 import transmission_rpc
-
 from transmission_rpc.torrent import File, FileStat, Torrent, Tracker, TrackerStats
-from .settings import TRANSMISSION_SETTINGS, TransmissionClientSettings
-from .controllers import TransmissionRPCController
-
 
 def debug_print_torrent(torrent: Torrent = None) -> None:
     if not torrent:
