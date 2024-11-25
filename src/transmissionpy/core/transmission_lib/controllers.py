@@ -41,6 +41,9 @@ class TransmissionRPCController(AbstractContextManager):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
+        if traceback:
+            pass
+
         if exc_type is not None:
             msg = f"Unhandled exception in TransmissionRPCController: {exc_value}"
             self.logger.error(msg)
