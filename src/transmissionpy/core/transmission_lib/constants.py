@@ -1,0 +1,1 @@
+TORRENT_STATES: list[str] = ["check pending", "checking", "downloading", "download pending", "seeding", "seed pending", "stopped"]

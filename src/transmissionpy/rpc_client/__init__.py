@@ -1,1 +1,2 @@
-from .methods import list_all_torrents
+from .methods import list_all_torrents, list_finished_torrents, list_paused_torrents, list_stalled_torrents
+from .methods import write_torrent_to_json

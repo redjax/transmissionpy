@@ -4,8 +4,33 @@ from transmissionpy.core import setup
 from transmissionpy.core.settings import LOGGING_SETTINGS
 from transmissionpy import rpc_client
 import pandas as pd
+import json
 
 from loguru import logger as log
+
+def demo_all_torrents():
+    all_torrents = rpc_client.list_all_torrents()
+    log.info(f"Found [{len(all_torrents)}] torrent(s)")
+    
+
+def demo_paused_torrents():
+    paused_torrents = rpc_client.list_paused_torrents()
+    log.info(f"Found[{len(paused_torrents)}] paused torrent(s)")
+
+
+def demo_stalled_torrents():
+    stalled_torrents= rpc_client.list_stalled_torrents()
+    log.info(f"Found[{len(stalled_torrents)}] stalled torrent(s)")
+    
+    
+def demo():
+    demo_all_torrents()
+    demo_paused_torrents()
+    demo_stalled_torrents()
+    
+
+def main():
+    demo()
 
 
 if __name__ == "__main__":
@@ -14,8 +39,17 @@ if __name__ == "__main__":
     
     log.debug(f"Transmission settings: {transmission_lib.transmission_settings}")
     
-    all_torrents = rpc_client.list_all_torrents()
-    log.info(f"Found [{len(all_torrents)}] torrent(s)")
+    main()
+    
+    
+    
+    
+    
+    # demo_torrent = all_torrents[1]
+    # demo_torrent_filename = demo_torrent.name.replace("(", "").replace(")", "").replace("[", "").replace("]", "").replace(" ","_")
+    # with open("ex_torrent.json", "w") as f:
+    #     data = json.dumps(demo_torrent.__dict__, indent=4)
+    #     f.write(data)
     
     # try:
     #     transmission_controller = transmission_lib.get_transmission_controller(transmission_settings=transmission_lib.transmission_settings)
