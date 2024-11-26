@@ -163,7 +163,50 @@ def stop_torrent(torrent: Torrent, transmission_settings: TransmissionClientSett
         raise exc
 
 
-def snapshot_torrents(transmission_settings: TransmissionClientSettings = transmission_settings,):
+def delete_torrent(torrent: Torrent, transmission_settings: TransmissionClientSettings = transmission_settings, remove_files: bool = False):
+    try:
+        transmission_controller: TransmissionRPCController = (
+            transmission_lib.get_transmission_controller(transmission_settings=transmission_settings)
+        )
+    except Exception as exc:
+        msg = f"({type(exc)}) Error getting TransmissionRPCController. Details: {exc}"
+        log.error(msg)
+
+        raise exc
+    
+    log.info(f"Deleting torrent '{torrent.name}'")
+    try:
+        with transmission_controller as torrent_ctl:
+            torrent_ctl.delete_torrent(torrent=torrent)
+    except Exception as exc:
+        msg = f"({type(exc)}) Error deleting torrent '{torrent.name}'. Details: {exc}"
+        log.error(msg)
+
+        raise exc
+    
+
+def delete_torrent_by_transmission_id(torrent_id: int, transmission_settings: TransmissionClientSettings = transmission_settings, remove_files: bool = False):
+    try:
+        transmission_controller: TransmissionRPCController = (
+            transmission_lib.get_transmission_controller(transmission_settings=transmission_settings)
+        )
+    except Exception as exc:
+        msg = f"({type(exc)}) Error getting TransmissionRPCController. Details: {exc}"
+        log.error(msg)
+
+        raise exc
+    
+    log.info(f"Deleting torrent by ID: '{torrent_id}'")
+    try:
+        with transmission_controller as torrent_ctl:
+            torrent_ctl.delete_torrent_by_id(torrent_id=torrent_id, remove_files=remove_files)
+    except Exception as exc:
+        msg = f"({type(exc)}) Error deleting torrent by ID '{torrent_id}'. Details: {exc}"
+        log.error(msg)
+
+        raise exc
+
+def snapshot_torrents(transmission_settings: TransmissionClientSettings = transmission_settings) -> list[Torrent]:
     all_torrents: list[Torrent] = list_all_torrents(transmission_settings=transmission_settings)
     
     log.info(f"Snapshotting [{len(all_torrents)}] torrents")
@@ -174,4 +217,4 @@ def snapshot_torrents(transmission_settings: TransmissionClientSettings = transm
         msg = f"({type(exc)}) Error snapshotting all torrents. Details: {exc}"
         log.error(msg)
 
-        raise exc
+    return all_torrents

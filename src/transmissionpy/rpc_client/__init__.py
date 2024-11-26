@@ -10,6 +10,6 @@ from .methods import (
     start_torrent,
     stop_torrent,
     write_torrent_to_json,
-    snapshot_torrents
+    snapshot_torrents, delete_torrent, delete_torrent_by_transmission_id
 )
 from .snapshot import SnapshotManager

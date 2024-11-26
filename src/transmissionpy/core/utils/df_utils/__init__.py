@@ -15,5 +15,6 @@ from .__methods import (
     save_pq,
     set_pandas_display_opts,
     sort_df_by_col,
-    save_json,load_json
+    save_json,load_json,
+    convert_df_datetimes_to_timestamp
 )

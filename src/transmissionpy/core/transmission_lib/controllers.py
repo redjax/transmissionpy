@@ -241,3 +241,34 @@ class TransmissionRPCController(AbstractContextManager):
             log.error(msg)
             
             raise exc
+        
+    def delete_torrent(self, torrent: Torrent, remove_files: bool = False) -> bool:
+        """Delete a torrent by passing the Torrent object."""
+        try:
+            # Assuming 'torrent.id' is the unique identifier for the torrent
+            torrent_id = torrent.id
+            return self.delete_torrent_by_id(torrent_id, remove_files)
+        except Exception as exc:
+            msg = f"({type(exc)}) Error deleting torrent '{torrent.name}'. Details: {exc}"
+            self.logger.error(msg)
+            raise exc
+
+    def delete_torrent_by_id(self, torrent_id: int | str, remove_files: bool = False) -> bool:
+        """Delete a torrent by passing the torrent ID."""
+        try:
+            self.logger.info(f"Deleting torrent with ID '{torrent_id}'")
+
+            # Assuming `self.client.remove_torrent()` is the method to delete torrents
+            # If 'remove_files' is True, pass that flag to remove the data
+            result = self.client.remove_torrent(torrent_id, delete_data=remove_files)
+            
+            if result:
+                self.logger.info(f"Successfully deleted torrent with ID '{torrent_id}'")
+                return True
+            else:
+                self.logger.error(f"Failed to delete torrent with ID '{torrent_id}'")
+                return False
+        except Exception as exc:
+            msg = f"({type(exc)}) Error deleting torrent with ID '{torrent_id}'. Details: {exc}"
+            self.logger.error(msg)
+            raise exc

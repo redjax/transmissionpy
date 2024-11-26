@@ -647,3 +647,23 @@ def convert_df_col_dtypes(df: pd.DataFrame, dtype_mapping: dict) -> pd.DataFrame
         raise ValueError(f"Column not found: {e}")
     except ValueError as e:
         raise ValueError(f"Invalid data type conversion: {e}")
+    
+
+def convert_df_datetimes_to_timestamp(df: pd.DataFrame):
+    """Convert all datetime columns in the DataFrame to Unix timestamps (integers).
+    
+    Params:
+    - df (pandas.DataFrame): The DataFrame to be processed.
+    
+    Returns:
+    - pandas.DataFrame: The DataFrame with all datetime columns converted to timestamps.
+
+    """
+    # Iterate over each column in the DataFrame
+    for column in df.columns:
+        # Check if the column contains datetime-like data
+        if pd.api.types.is_datetime64_any_dtype(df[column]):
+            # Convert datetime to Unix timestamp (number of seconds since epoch)
+            df[column] = df[column].apply(lambda x: int(x.timestamp()) if pd.notnull(x) else None)
+    
+    return df
