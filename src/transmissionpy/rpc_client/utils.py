@@ -3,13 +3,12 @@ from __future__ import annotations
 import random
 import typing as t
 
-from transmissionpy.core.utils import list_utils
+from transmissionpy.core.utils import df_utils, list_utils
 from transmissionpy.domain.Transmission import TorrentMetadataIn, TorrentMetadataOut
-from transmissionpy.core.utils import df_utils
 
 from loguru import logger as log
-from transmission_rpc import Torrent
 import pandas as pd
+from transmission_rpc import Torrent
 
 def convert_torrent_to_torrentmetadata(torrent: Torrent):
     if torrent is None:

@@ -1,7 +1,15 @@
+from __future__ import annotations
+
 from pathlib import Path
 import typing as t
 
-from transmissionpy.core.constants import DATA_DIR, OUTPUT_DIR, PQ_OUTPUT_DIR, JSON_OUTPUT_DIR, CSV_OUTPUT_DIR
+from transmissionpy.core.constants import (
+    CSV_OUTPUT_DIR,
+    DATA_DIR,
+    JSON_OUTPUT_DIR,
+    OUTPUT_DIR,
+    PQ_OUTPUT_DIR,
+)
 
 ALL_PATHS: list = [DATA_DIR, OUTPUT_DIR, PQ_OUTPUT_DIR, JSON_OUTPUT_DIR, CSV_OUTPUT_DIR]
 

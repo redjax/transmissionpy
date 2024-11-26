@@ -43,7 +43,7 @@ VENV_DIR = Path("./.venv").resolve()
 
 ## At minimum, these paths will be checked by your linters
 #  Add new paths with nox_utils.append_lint_paths(extra_paths=["..."],)
-DEFAULT_LINT_PATHS: list[str] = ["src/", "tests/", "scripts/", "notebooks/"]
+DEFAULT_LINT_PATHS: list[str] = ["src/", "tests/", "scripts/", "notebooks/", "sandbox"]
 ## Python app source code
 APP_SRC: str = "src/transmissionpy"
 ## Set directory for requirements.txt file output

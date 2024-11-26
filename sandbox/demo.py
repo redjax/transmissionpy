@@ -1,17 +1,29 @@
-from transmissionpy.core import transmission_lib
-from transmissionpy.core.utils import df_utils
-from transmissionpy.core import setup
-from transmissionpy.core.settings import LOGGING_SETTINGS
-from transmissionpy import rpc_client
-import pandas as pd
+from __future__ import annotations
+
 import json
-from transmission_rpc import Torrent
 import random
-from transmissionpy.domain.Transmission import TorrentMetadataIn, TorrentMetadataOut
 import time
-from transmissionpy.core.constants import DATA_DIR, OUTPUT_DIR, PQ_OUTPUT_DIR, JSON_OUTPUT_DIR
+
+from transmissionpy import rpc_client
+from transmissionpy.core import setup, transmission_lib
+from transmissionpy.core.constants import (
+    DATA_DIR,
+    JSON_OUTPUT_DIR,
+    OUTPUT_DIR,
+    PQ_OUTPUT_DIR,
+    CSV_OUTPUT_DIR
+)
+from transmissionpy.core.settings import LOGGING_SETTINGS
+from transmissionpy.core.utils import df_utils, path_utils
+from transmissionpy.domain.Transmission import (
+    TORRENT_INT_DATETIME_FIELDNAMES,
+    TorrentMetadataIn,
+    TorrentMetadataOut,
+)
 
 from loguru import logger as log
+import pandas as pd
+from transmission_rpc import Torrent
 
 def demo_all_torrents():
     all_torrents = rpc_client.list_all_torrents()
@@ -59,17 +71,25 @@ def demo_pause_torrent(torrent: Torrent):
     rpc_client.start_torrent(torrent=torrent)
     
 
-def demo_convert_to_df(torrents: list[Torrent], title: str = "Unnamed Dataframe") -> pd.DataFrame:
+def demo_convert_to_df(torrents: list[Torrent], title: str = "Unnamed Dataframe", clean_filename: bool = True) -> pd.DataFrame:
     torrent_dicts = [t.__dict__["fields"] for t in torrents]
     # df = pd.DataFrame(torrent_dicts)
     df = rpc_client.utils.convert_torrents_to_df(torrents=torrents)
     
     # print(f"{title} DataFrame:\n{df.head(5)}")
     
+    if clean_filename:
+        log.info(f"Cleaning filename: '{title}'")
+        # title = title.lower().replace(" ", "_").replace(":", "-")
+        title = path_utils.sanitize_filename(filename=title).lower()
+        log.info(f"Cleaned filenname: '{title}'")
+    
     log.info(f"Saving dataframe '{title}'to parquet, json and csv files...")
-    df_utils.df_to_parquet(df=df, parquet_output=f"{PQ_OUTPUT_DIR}/{title}.parquet")
-    df_utils.df_to_json(df=df, json_output=f"{JSON_OUTPUT_DIR}/{title}.json")
-    df_utils.df_to_csv(df=df, csv_output=f"{OUTPUT_DIR}/{title}.csv")
+    df_utils.save_pq(df=df, pq_file=f"{PQ_OUTPUT_DIR}/{title}.parquet")
+    df_utils.save_json(df=df, json_file=f"{JSON_OUTPUT_DIR}/{title}.json", indent=4)
+    df_utils.save_csv(df=df, csv_file=f"{CSV_OUTPUT_DIR}/{title}.csv")
+    
+    return df
 
 
 
@@ -85,10 +105,22 @@ def demo():
     # demo_pause_torrent(torrent=random_torrent)
     
     log.info("Convering combined all, paused, stalled, and finished torrents to dataframe")
-    demo_convert_to_df(torrents=all_torrents, title="All Torrents")
-    demo_convert_to_df(torrents=paused_torrents, title="Paused Torrents")
-    demo_convert_to_df(torrents=stalled_torrents, title="Stalled Torrents")
-    demo_convert_to_df(torrents=finished_torrents, title="Finished Torrents")
+    all_torrents_df = demo_convert_to_df(torrents=all_torrents, title="All Torrents")
+    paused_torrents_df = demo_convert_to_df(torrents=paused_torrents, title="Paused Torrents")
+    stalled_torrents_df = demo_convert_to_df(torrents=stalled_torrents, title="Stalled Torrents")
+    finished_torrents_df = demo_convert_to_df(torrents=finished_torrents, title="Finished Torrents")
+    
+    log.debug(f"'All Torrents' columns: {all_torrents_df.columns.tolist()}")
+    
+    torrents_by_seconds_downloading_df = df_utils.sort_df_by_col(df=all_torrents_df, col_name="secondsDownloading", order="desc")
+    
+    log.info("Converting datetime fields currently represented as integers to datetimes")
+    ## Convert column dtypes
+    torrent_df_mapping = {"activityDate": "datetime64[s]", "addedDate": "datetime64[s]", "dateCreated": "datetime64[s]", "doneDate": "datetime64[s]", "editDate": "datetime64[s]", "startDate": "datetime64[s]"}
+    torrents_by_seconds_downloading_df = df_utils.convert_df_col_dtypes(df=torrents_by_seconds_downloading_df, dtype_mapping=torrent_df_mapping)
+
+    log.info(f"Top 5 longest downloading torrents:\n{torrents_by_seconds_downloading_df[['name', 'secondsDownloading', 'addedDate', 'startDate', 'activityDate', 'error']].head(5)}")
+
 
 
 def main():
