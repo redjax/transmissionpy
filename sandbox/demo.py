@@ -11,7 +11,8 @@ from transmissionpy.core.constants import (
     JSON_OUTPUT_DIR,
     OUTPUT_DIR,
     PQ_OUTPUT_DIR,
-    CSV_OUTPUT_DIR
+    CSV_OUTPUT_DIR,
+    SNAPSHOT_DIR
 )
 from transmissionpy.core.settings import LOGGING_SETTINGS
 from transmissionpy.core.utils import df_utils, path_utils
@@ -99,6 +100,8 @@ def demo():
     stalled_torrents = demo_stalled_torrents()
     finished_torrents = demo_finished_torrents()
     
+    rpc_client.snapshot_torrents()
+    
     random_torrent = rpc_client.utils.select_random_torrent(torrents_list=all_torrents)
     random_torrent_metadata = rpc_client.utils.convert_torrent_to_torrentmetadata(torrent=random_torrent)
     
@@ -115,16 +118,18 @@ def demo():
     torrents_by_seconds_downloading_df = df_utils.sort_df_by_col(df=all_torrents_df, col_name="secondsDownloading", order="desc")
     
     log.info("Converting datetime fields currently represented as integers to datetimes")
-    ## Convert column dtypes
     torrent_df_mapping = {"activityDate": "datetime64[s]", "addedDate": "datetime64[s]", "dateCreated": "datetime64[s]", "doneDate": "datetime64[s]", "editDate": "datetime64[s]", "startDate": "datetime64[s]"}
+    
+    all_torrents_df = df_utils.convert_df_col_dtypes(df=all_torrents_df, dtype_mapping=torrent_df_mapping)
+    ## Convert column dtypes
     torrents_by_seconds_downloading_df = df_utils.convert_df_col_dtypes(df=torrents_by_seconds_downloading_df, dtype_mapping=torrent_df_mapping)
 
     log.info(f"Top 5 longest downloading torrents:\n{torrents_by_seconds_downloading_df[['name', 'secondsDownloading', 'addedDate', 'startDate', 'activityDate', 'error']].head(5)}")
 
 
-
 def main():
-    demo()
+    # demo()
+    rpc_client.snapshot_torrents()
 
 
 if __name__ == "__main__":
@@ -132,6 +137,6 @@ if __name__ == "__main__":
     setup.create_app_paths()
     df_utils.set_pandas_display_opts()
     
-    log.debug(f"Transmission settings: {transmission_lib.transmission_settings}")
+    # log.debug(f"Transmission settings: {transmission_lib.transmission_settings}")
     
     main()

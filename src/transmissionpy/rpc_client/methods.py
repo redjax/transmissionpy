@@ -11,6 +11,7 @@ from transmissionpy.core.transmission_lib import (
 )
 from transmissionpy.core.utils import df_utils, hash_utils
 from transmissionpy.domain.Transmission import TorrentMetadataIn, TorrentMetadataOut
+from .snapshot import SnapshotManager
 
 from loguru import logger as log
 from transmission_rpc import Torrent
@@ -118,10 +119,10 @@ def list_paused_torrents(
     return paused_torrents
 
 
-def start_torrent(torrent: Torrent):
+def start_torrent(torrent: Torrent, transmission_settings: TransmissionClientSettings = transmission_settings):
     try:
         transmission_controller: TransmissionRPCController = (
-            transmission_lib.get_transmission_controller()
+            transmission_lib.get_transmission_controller(transmission_settings=transmission_settings)
         )
     except Exception as exc:
         msg = f"({type(exc)}) Error getting TransmissionRPCController. Details: {exc}"
@@ -140,10 +141,10 @@ def start_torrent(torrent: Torrent):
         raise exc
 
 
-def stop_torrent(torrent: Torrent):
+def stop_torrent(torrent: Torrent, transmission_settings: TransmissionClientSettings = transmission_settings,):
     try:
         transmission_controller: TransmissionRPCController = (
-            transmission_lib.get_transmission_controller()
+            transmission_lib.get_transmission_controller(transmission_settings=transmission_settings)
         )
     except Exception as exc:
         msg = f"({type(exc)}) Error getting TransmissionRPCController. Details: {exc}"
@@ -157,6 +158,20 @@ def stop_torrent(torrent: Torrent):
             torrent_ctl.stop_torrent(torrent=torrent)
     except Exception as exc:
         msg = f"({type(exc)}) Error stopping torrent '{torrent.name}'. Details: {exc}"
+        log.error(msg)
+
+        raise exc
+
+
+def snapshot_torrents(transmission_settings: TransmissionClientSettings = transmission_settings,):
+    all_torrents: list[Torrent] = list_all_torrents(transmission_settings=transmission_settings)
+    
+    log.info(f"Snapshotting [{len(all_torrents)}] torrents")
+    snapshot_manager = SnapshotManager(snapshot_filename="all_torrents_snapshot")
+    try:
+        snapshot_manager.save_snapshot(torrents=all_torrents)
+    except Exception as exc:
+        msg = f"({type(exc)}) Error snapshotting all torrents. Details: {exc}"
         log.error(msg)
 
         raise exc

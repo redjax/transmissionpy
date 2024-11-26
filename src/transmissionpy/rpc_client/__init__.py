@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from . import utils
+from . import utils, snapshot
+
 from .methods import (
     list_all_torrents,
     list_finished_torrents,
@@ -9,4 +10,6 @@ from .methods import (
     start_torrent,
     stop_torrent,
     write_torrent_to_json,
+    snapshot_torrents
 )
+from .snapshot import SnapshotManager
