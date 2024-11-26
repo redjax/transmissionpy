@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 
 def sanitize_filename(filename: str, space_replacement: str = "_", unsafe_char_replacement: str = "-") -> str:

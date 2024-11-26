@@ -9,7 +9,7 @@ from transmissionpy.core.constants import (
     JSON_OUTPUT_DIR,
     OUTPUT_DIR,
     PQ_OUTPUT_DIR,
-    SNAPSHOT_DIR
+    SNAPSHOT_DIR,
 )
 
 ALL_PATHS: list = [DATA_DIR, OUTPUT_DIR, PQ_OUTPUT_DIR, JSON_OUTPUT_DIR, CSV_OUTPUT_DIR]

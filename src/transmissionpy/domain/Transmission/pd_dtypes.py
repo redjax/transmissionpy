@@ -1,4 +1,6 @@
 ## Torrent datatype mapping for Pandas DataFrame columns
+from __future__ import annotations
+
 torrent_df_mapping = {
     "activityDate": "datetime64[s]",
     "addedDate": "datetime64[s]",

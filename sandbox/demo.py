@@ -7,12 +7,12 @@ import time
 from transmissionpy import rpc_client
 from transmissionpy.core import setup, transmission_lib
 from transmissionpy.core.constants import (
+    CSV_OUTPUT_DIR,
     DATA_DIR,
     JSON_OUTPUT_DIR,
     OUTPUT_DIR,
     PQ_OUTPUT_DIR,
-    CSV_OUTPUT_DIR,
-    SNAPSHOT_DIR
+    SNAPSHOT_DIR,
 )
 from transmissionpy.core.settings import LOGGING_SETTINGS
 from transmissionpy.core.utils import df_utils, path_utils
@@ -20,7 +20,7 @@ from transmissionpy.domain.Transmission import (
     TORRENT_INT_DATETIME_FIELDNAMES,
     TorrentMetadataIn,
     TorrentMetadataOut,
-    torrent_df_mapping
+    torrent_df_mapping,
 )
 
 from loguru import logger as log

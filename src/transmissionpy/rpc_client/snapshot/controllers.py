@@ -1,17 +1,22 @@
-from loguru import logger as log
+from __future__ import annotations
 
+from datetime import datetime
 from pathlib import Path
 import typing as t
-from transmissionpy.core.utils import df_utils, path_utils
-from datetime import datetime
 
-from transmissionpy.domain.Transmission import TorrentMetadataIn, TorrentMetadataOut
-from transmissionpy.rpc_client.utils import convert_torrents_to_df, convert_torrent_to_torrentmetadata, convert_multiple_torrents_to_torrentmetadata
 from transmissionpy.core.constants import SNAPSHOT_DIR
+from transmissionpy.core.utils import df_utils, path_utils
+from transmissionpy.domain.Transmission import TorrentMetadataIn, TorrentMetadataOut
+from transmissionpy.rpc_client.utils import (
+    convert_multiple_torrents_to_torrentmetadata,
+    convert_torrent_to_torrentmetadata,
+    convert_torrents_to_df,
+)
 
-from transmission_rpc import Torrent
-import pandas as pd
+from loguru import logger as log
 import msgpack
+import pandas as pd
+from transmission_rpc import Torrent
 
 class SnapshotManager:
     def __init__(self, snapshot_dir: t.Union[Path, str] = SNAPSHOT_DIR, snapshot_filename: str = "snapshots"):
