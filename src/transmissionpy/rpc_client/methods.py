@@ -10,16 +10,23 @@ from transmissionpy.core.transmission_lib import (
     transmission_settings,
 )
 from transmissionpy.core.utils import df_utils, hash_utils
-from transmissionpy.domain.Transmission import TorrentMetadataIn, TorrentMetadataOut
-from transmissionpy.domain.Transmission import torrent_df_mapping
+from transmissionpy.domain.Transmission import (
+    TorrentMetadataIn,
+    TorrentMetadataOut,
+    torrent_df_mapping,
+)
 
 from .snapshot import SnapshotManager
-from .utils import convert_multiple_torrents_to_torrentmetadata, convert_torrent_to_torrentmetadata, convert_torrents_to_df, select_random_torrent
+from .utils import (
+    convert_multiple_torrents_to_torrentmetadata,
+    convert_torrent_to_torrentmetadata,
+    convert_torrents_to_df,
+    select_random_torrent,
+)
 
 from loguru import logger as log
-from transmission_rpc import Torrent
-
 import pandas as pd
+from transmission_rpc import Torrent
 
 def write_torrent_to_json(torrent: Torrent, output: str):
     if torrent is None:

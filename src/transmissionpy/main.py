@@ -1,16 +1,33 @@
+from __future__ import annotations
+
 import argparse
 from dataclasses import dataclass, field
-from loguru import logger as log
 from pathlib import Path
-import typing as t
 from time import sleep
+import typing as t
 
-from transmissionpy.core import setup
-from transmissionpy.core.settings import LOGGING_SETTINGS
-from transmissionpy.domain.Transmission import torrent_df_mapping, TORRENT_INT_DATETIME_FIELDNAMES, TorrentFileStatIn, TorrentFileStatOut, TorrentMetadataIn, TorrentMetadataOut
 from transmissionpy import rpc_client
-from transmissionpy.core.constants import DATA_DIR, OUTPUT_DIR, SNAPSHOT_DIR, PQ_OUTPUT_DIR, CSV_OUTPUT_DIR,JSON_OUTPUT_DIR
+from transmissionpy.core import setup
+from transmissionpy.core.constants import (
+    CSV_OUTPUT_DIR,
+    DATA_DIR,
+    JSON_OUTPUT_DIR,
+    OUTPUT_DIR,
+    PQ_OUTPUT_DIR,
+    SNAPSHOT_DIR,
+)
+from transmissionpy.core.settings import LOGGING_SETTINGS
 from transmissionpy.core.utils import df_utils, path_utils
+from transmissionpy.domain.Transmission import (
+    TORRENT_INT_DATETIME_FIELDNAMES,
+    TorrentFileStatIn,
+    TorrentFileStatOut,
+    TorrentMetadataIn,
+    TorrentMetadataOut,
+    torrent_df_mapping,
+)
+
+from loguru import logger as log
 
 def main():
     pass
