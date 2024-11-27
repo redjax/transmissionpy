@@ -70,7 +70,7 @@ def convert_torrents_to_df(torrents: list[t.Union[Torrent, TorrentMetadataIn, To
 
     try:
         df = pd.DataFrame(_torrents)
-        
+
         return df
     except Exception as exc:
         msg = f"({type(exc)}) Error creating dataframe from torrent list. Details: {exc}"

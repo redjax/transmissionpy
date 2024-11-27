@@ -75,14 +75,10 @@ def demo_pause_torrent(torrent: Torrent):
 
 def demo_convert_to_df(torrents: list[Torrent], title: str = "Unnamed Dataframe", clean_filename: bool = True) -> pd.DataFrame:
     torrent_dicts = [t.__dict__["fields"] for t in torrents]
-    # df = pd.DataFrame(torrent_dicts)
     df = rpc_client.utils.convert_torrents_to_df(torrents=torrents)
-    
-    # print(f"{title} DataFrame:\n{df.head(5)}")
     
     if clean_filename:
         log.info(f"Cleaning filename: '{title}'")
-        # title = title.lower().replace(" ", "_").replace(":", "-")
         title = path_utils.sanitize_filename(filename=title).lower()
         log.info(f"Cleaned filenname: '{title}'")
     
@@ -94,43 +90,16 @@ def demo_convert_to_df(torrents: list[Torrent], title: str = "Unnamed Dataframe"
     return df
 
 def demo_delete_oldest():
-    all_torrents = rpc_client.snapshot_torrents()
-    all_torrents_df = demo_convert_to_df(torrents=all_torrents, title="All Torrents")
+    deleted_torrents = rpc_client.delete_oldest_torrents(delete_count=2)
     
-    sorted_df = all_torrents_df.sort_values(by=["addedDate", "startDate", "secondsDownloading"], ascending=[True, True, False])
-    sorted_df = df_utils.convert_df_col_dtypes(df=sorted_df, dtype_mapping=torrent_df_mapping)
+    return deleted_torrents
+
+def demo_delete_finished():
+    deleted_torrents = rpc_client.delete_finished_torrents()
     
-    log.debug(f"Sorted all_torrents_df:\n{sorted_df[['id', 'name', 'isStalled', 'isFinished', 'addedDate', 'startDate', 'secondsDownloading']]}")
+    return deleted_torrents
     
-    sorted_df = df_utils.convert_df_datetimes_to_timestamp(df=sorted_df)
-    ## Find the oldest stalled torrent and delete
-    for index, row in sorted_df.iterrows():
-        if row["isStalled"] and not row["isFinished"]:
-            torrent_id = row["id"]
-            log.info(f"Deleting oldest stalled torrent: [id:{row['id']}] {row['name']}")
-            
-            try:
-                rpc_client.delete_torrent_by_transmission_id(torrent_id=torrent_id, remove_files=True)
-            
-                deleted_snapshot = rpc_client.SnapshotManager(snapshot_filename="deleted_torrents_snapshot")
-                deleted_snapshot.save_snapshot(torrents=[row.to_dict()])
-            
-                deleted_row = row
-                
-                break
-            
-            except Exception as exc:
-                msg = f"({type(exc)}) Error deleting torrent ID '{torrent_id}'. Details: {exc}"
-                log.error(msg)
-                
-                raise exc
-            
-        
-        else:
-            log.debug(f"Torrent [id:{row['id']}] {row['name']} is not stalled, finding next...")
-            continue
-        
-    log.info(f"Deleted torrent:\n{deleted_row[['id', 'name', 'isStalled', 'isFinished', 'addedDate', 'startDate', 'secondsDownloading', 'percentDone']]}")
+
 
 def demo():
     all_torrents = demo_all_torrents()
@@ -171,7 +140,8 @@ def main(run_delete: bool = False):
     
     if run_delete:
         log.warning("Deleting oldest Torrent")
-        demo_delete_oldest()
+        # demo_delete_oldest()
+        demo_delete_finished()
 
 
 if __name__ == "__main__":
@@ -181,6 +151,6 @@ if __name__ == "__main__":
     
     # log.debug(f"Transmission settings: {transmission_lib.transmission_settings}")
     
-    RUN_DELETE_DEMO = False
+    RUN_DELETE_DEMO = True
 
     main(run_delete=RUN_DELETE_DEMO)

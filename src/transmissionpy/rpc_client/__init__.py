@@ -11,6 +11,6 @@ from .methods import (
     snapshot_torrents,
     start_torrent,
     stop_torrent,
-    write_torrent_to_json,
+    write_torrent_to_json,delete_oldest_torrents,delete_finished_torrents
 )
 from .snapshot import SnapshotManager
