@@ -83,7 +83,7 @@ def list_torrents(status: t.Annotated[str, Parameter(name="status", show_default
             log.warning(f"No {status.title()} torrents found at remote")
         return
     
-    print_df = torrents_df[["id", "name", "isFinished", "isStalled", "addedDate", "activityDate", "downloadedEver", "error", "percentDone", "timeDownloading"]]
+    print_df: pd.DataFrame = torrents_df[["id", "name", "isFinished", "isStalled", "addedDate", "activityDate", "downloadedEver", "error", "percentDone", "timeDownloading"]]
     ## Convert percentDone column to string for displaying to user
     print_df["percentDone"] = print_df["percentDone"].apply(lambda x: "{:.2f}%".format(round(x * 100, 2)))
     
@@ -94,7 +94,15 @@ def list_torrents(status: t.Annotated[str, Parameter(name="status", show_default
         log.info(f"{status.title()} torrent count: {print_df.shape[0]}")
         log.info(f"{status.title()} torrents:")
         
-    print(print_df.head(preview))
+    print_df = print_df.rename(columns={"id": "torrentId"})
+    ## Hide pandas index so transmission ID is less confusing
+    print_df = df_utils.hide_df_index(df=print_df)
+    
+    # with pd.option_context("display.max_columns", 50):
+        ## Hide pandas index so transmission ID is less confusing
+        # print(print_df.head(preview).to_string(index=False))
+    with pd.option_context("display.max_rows", 300):
+        print(print_df.head(preview))
     
     # return torrents_df
     

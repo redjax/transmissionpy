@@ -4,6 +4,9 @@ import sys
 import typing as t
 
 from .torrent import torrent_app
+from transmissionpy.core.utils import df_utils
+
+import pandas as pd
 
 from cyclopts import App, Group, Parameter
 from loguru import logger as log
@@ -25,6 +28,23 @@ def cli_launcher(*tokens: t.Annotated[str, Parameter(show=False, allow_leading_h
         log.add(sys.stderr, format="{time:YYYY-MM-DD HH:mm:ss} [{level}] : {message}", level="INFO")
         
     log.debug("START transmissionpy CLI")
+    
+#     max_rows=100
+#     max_columns=10
+#     max_colwidth=10
+#     max_width=None
+
+#     log.debug(f"""Setting Pandas options:
+# max_rows: {max_rows}
+# max_columns: {max_columns}
+# max_colwidth: {max_colwidth}
+# max_width: {max_width}
+# """)
+    
+    ## Set Pandas display options
+    # pd.set_option("display.max_rows", 300)
+    # pd.set_option("display.max_columns", 5)
+    # pd.set_option("display.max_colwidth", 20)
     
     app(tokens)
     

@@ -18,4 +18,5 @@ from .__methods import (
     save_pq,
     set_pandas_display_opts,
     sort_df_by_col,
+    hide_df_index
 )
