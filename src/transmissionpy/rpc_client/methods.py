@@ -61,7 +61,7 @@ def list_all_torrents(
 
         raise exc
 
-    log.info("Getting all torrents")
+    log.debug("Getting all torrents")
     try:
         with transmission_controller as torrent_ctl:
             all_torrents: list[Torrent] = torrent_ctl.get_all_torrents()
@@ -85,7 +85,7 @@ def list_finished_torrents(
         log.warning("No torrents found at remote")
         return []
 
-    log.info(f"Filtering [{len(all_torrents)}] and returning only finished torrents")
+    log.debug(f"Filtering [{len(all_torrents)}] and returning only finished torrents")
     finished_torrents: list[Torrent] = [
         torrent for torrent in all_torrents if torrent.done_date
     ]
@@ -104,7 +104,7 @@ def list_stalled_torrents(
         log.warning("No torrents found at remote")
         return []
 
-    log.info(f"Filtering [{len(all_torrents)}] and returning only stalled torrents")
+    log.debug(f"Filtering [{len(all_torrents)}] and returning only stalled torrents")
     stalled_torrents: list[Torrent] = [
         torrent for torrent in all_torrents if torrent.is_stalled
     ]

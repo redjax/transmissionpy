@@ -1,1 +1,1 @@
-from .cli_main import main, parse_args
+from .main import app
