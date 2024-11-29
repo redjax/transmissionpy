@@ -83,7 +83,7 @@ def list_torrents(status: t.Annotated[str, Parameter(name="status", show_default
             log.warning(f"No {status.title()} torrents found at remote")
         return
     
-    print_df = torrents_df[["name", "isFinished", "isStalled", "addedDate", "activityDate", "downloadedEver", "error", "percentDone", "timeDownloading"]]
+    print_df = torrents_df[["id", "name", "isFinished", "isStalled", "addedDate", "activityDate", "downloadedEver", "error", "percentDone", "timeDownloading"]]
     ## Convert percentDone column to string for displaying to user
     print_df["percentDone"] = print_df["percentDone"].apply(lambda x: "{:.2f}%".format(round(x * 100, 2)))
     
@@ -97,3 +97,6 @@ def list_torrents(status: t.Annotated[str, Parameter(name="status", show_default
     print(print_df.head(preview))
     
     # return torrents_df
+    
+
+# @torrent_app.command(name="")

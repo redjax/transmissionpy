@@ -18,8 +18,8 @@ dependencies = [
     "transmission-rpc>=7.0.11",
 ]
 
-# [project.scripts]
-# transmissionpy = "transmissionpy:main"
+[project.scripts]
+transmissionpy = "transmissionpy:start_cli"
 
 [build-system]
 requires = ["hatchling"]

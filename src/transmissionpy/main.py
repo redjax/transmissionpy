@@ -29,6 +29,7 @@ from transmissionpy.domain.Transmission import (
 
 from loguru import logger as log
 
+
 def main():
     pass
 
