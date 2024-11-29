@@ -1,10 +1,12 @@
-from cyclopts import App, Group, Parameter
-import typing as t
-import sys
+from __future__ import annotations
 
-from loguru import logger as log
+import sys
+import typing as t
 
 from .torrent import torrent_app
+
+from cyclopts import App, Group, Parameter
+from loguru import logger as log
 
 app = App(name="transmissionpy_cli", help="CLI for transmissionpy Transmission RPC controller client.")
 

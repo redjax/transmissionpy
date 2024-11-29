@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import json
-import random
-import time
-import sys
 import os
+import random
+import sys
+import time
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -28,11 +28,19 @@ from transmissionpy.domain.Transmission import (
 )
 
 from loguru import logger as log
+from methods import (
+    demo_all_torrents,
+    demo_convert_to_df,
+    demo_convert_to_metadata,
+    demo_delete_finished,
+    demo_delete_oldest,
+    demo_finished_torrents,
+    demo_pause_torrent,
+    demo_paused_torrents,
+    demo_stalled_torrents,
+)
 import pandas as pd
 from transmission_rpc import Torrent
-
-from methods import demo_delete_finished,demo_all_torrents,demo_convert_to_df,demo_convert_to_metadata,demo_delete_oldest,demo_finished_torrents,demo_pause_torrent,demo_paused_torrents,demo_stalled_torrents
-
 
 def demo():
     all_torrents = demo_all_torrents()

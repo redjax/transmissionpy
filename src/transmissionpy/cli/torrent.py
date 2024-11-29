@@ -1,12 +1,18 @@
-from loguru import logger as log
+from __future__ import annotations
+
+from datetime import timedelta
 import typing as t
 
-from cyclopts import App, Parameter, Group, validators
-import pandas as pd
 from transmissionpy import rpc_client
-from transmissionpy.domain.Transmission import TorrentMetadataIn, torrent_df_dtypes_mapping
 from transmissionpy.core.utils import df_utils, time_utils
-from datetime import timedelta
+from transmissionpy.domain.Transmission import (
+    TorrentMetadataIn,
+    torrent_df_dtypes_mapping,
+)
+
+from cyclopts import App, Group, Parameter, validators
+from loguru import logger as log
+import pandas as pd
 
 torrent_app = App(name="torrent", help="Torrent management commands.")
 
