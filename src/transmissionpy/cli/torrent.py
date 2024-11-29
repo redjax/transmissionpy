@@ -43,12 +43,13 @@ def count_torrents(status: t.Annotated[str, Parameter(name="status", show_defaul
 
 
 @torrent_app.command(name="list")
-def list_torrents(status: t.Annotated[str, Parameter(name="status", show_default=True)] = "all", preview: t.Annotated[int, Parameter(name=["-p", "--preview"])] = 5):
+def list_torrents(status: t.Annotated[str, Parameter(name="status", show_default=True)] = "all", preview: t.Annotated[int, Parameter(name=["-p", "--preview"])] = 5, limit: t.Annotated[int, Parameter(name=["-l", "--limit"])] = 300):
     """List torrents by status.
     
     Params:
         status (str): Status of torrents to list. Options: ["all", "finished", "stalled"].
         preview (int): Number of torrents to preview. 0=all results (output will be slow with many results, and may push parts out of the terminal history).
+        limit (int): Max number of DataFrame rows to print when displaying in CLI. 0=unlimited (output will be slow with many results, and may push parts out of the terminal history).
     """    
     if status not in ["all", "finished", "stalled"]:
         raise ValueError(f"Invalid status: {status}. Must be one of ['all', 'finished', 'stalled']")
@@ -101,7 +102,7 @@ def list_torrents(status: t.Annotated[str, Parameter(name="status", show_default
     # with pd.option_context("display.max_columns", 50):
         ## Hide pandas index so transmission ID is less confusing
         # print(print_df.head(preview).to_string(index=False))
-    with pd.option_context("display.max_rows", 300):
+    with pd.option_context("display.max_rows", limit):
         print(print_df.head(preview))
     
     # return torrents_df
