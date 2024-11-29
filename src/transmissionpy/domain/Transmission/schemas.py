@@ -184,3 +184,19 @@ class TorrentMetadataOut(TorrentMetadataBase):
     peersFrom: TorrentPeersFromOut = Field(default=None)
     trackerStats: list[TorrentTrackerStatOut] = Field(default_factory=list())
     trackers: list[TorrentTrackerOut] = Field(default_factory=list())
+
+
+class TorrentSnapshotMetadataBase(BaseModel):
+    snapshot_date: str = Field(default=None)
+    torrents: list[TorrentMetadataBase] = Field(default=None)
+    
+
+class TorrentSnapshotMetadataIn(TorrentSnapshotMetadataBase):
+    torrents: list[TorrentMetadataIn] = Field(default=None, repr=False)
+    
+    @computed_field
+    def torrent_count(self) -> int:
+        return len(self.torrents)
+
+class TorrentSnapshotMetadataOut(TorrentSnapshotMetadataBase):
+    id: int

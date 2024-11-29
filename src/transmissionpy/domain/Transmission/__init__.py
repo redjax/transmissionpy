@@ -7,4 +7,5 @@ from .schemas import (
     TorrentFileStatOut,
     TorrentMetadataIn,
     TorrentMetadataOut,
+    TorrentSnapshotMetadataIn, TorrentSnapshotMetadataOut
 )
