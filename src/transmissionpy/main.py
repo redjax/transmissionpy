@@ -24,7 +24,7 @@ from transmissionpy.domain.Transmission import (
     TorrentFileStatOut,
     TorrentMetadataIn,
     TorrentMetadataOut,
-    torrent_df_mapping,
+    torrent_df_dtypes_mapping,
 )
 
 from loguru import logger as log

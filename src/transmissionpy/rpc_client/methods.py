@@ -13,7 +13,7 @@ from transmissionpy.core.utils import df_utils, hash_utils
 from transmissionpy.domain.Transmission import (
     TorrentMetadataIn,
     TorrentMetadataOut,
-    torrent_df_mapping,
+    torrent_df_dtypes_mapping,
 )
 
 from .snapshot import SnapshotManager
@@ -242,7 +242,7 @@ def delete_oldest_torrents(delete_count: int = 1):
     
     log.info("Sorting torrents by date ascending (oldest first)")
     sorted_df = all_torrents_df.sort_values(by=["addedDate", "startDate", "secondsDownloading"], ascending=[True, True, False])
-    sorted_df = df_utils.convert_df_col_dtypes(df=sorted_df, dtype_mapping=torrent_df_mapping)
+    sorted_df = df_utils.convert_df_col_dtypes(df=sorted_df, dtype_mapping=torrent_df_dtypes_mapping)
     
     log.debug(f"Sorted all_torrents_df:\n{sorted_df[['id', 'name', 'isStalled', 'isFinished', 'addedDate', 'startDate', 'secondsDownloading']]}")
     sorted_df = df_utils.convert_df_datetimes_to_timestamp(df=sorted_df)

@@ -24,7 +24,7 @@ from transmissionpy.domain.Transmission import (
     TORRENT_INT_DATETIME_FIELDNAMES,
     TorrentMetadataIn,
     TorrentMetadataOut,
-    torrent_df_mapping,
+    torrent_df_dtypes_mapping,
 )
 
 from loguru import logger as log
@@ -58,11 +58,11 @@ def demo():
     torrents_by_seconds_downloading_df = df_utils.sort_df_by_col(df=all_torrents_df, col_name="secondsDownloading", order="desc")
     
     log.info("Converting datetime fields currently represented as integers to datetimes")
-    torrent_df_mapping = {"activityDate": "datetime64[s]", "addedDate": "datetime64[s]", "dateCreated": "datetime64[s]", "doneDate": "datetime64[s]", "editDate": "datetime64[s]", "startDate": "datetime64[s]"}
+    torrent_df_dtypes_mapping = {"activityDate": "datetime64[s]", "addedDate": "datetime64[s]", "dateCreated": "datetime64[s]", "doneDate": "datetime64[s]", "editDate": "datetime64[s]", "startDate": "datetime64[s]"}
     
-    all_torrents_df = df_utils.convert_df_col_dtypes(df=all_torrents_df, dtype_mapping=torrent_df_mapping)
+    all_torrents_df = df_utils.convert_df_col_dtypes(df=all_torrents_df, dtype_mapping=torrent_df_dtypes_mapping)
     ## Convert column dtypes
-    torrents_by_seconds_downloading_df = df_utils.convert_df_col_dtypes(df=torrents_by_seconds_downloading_df, dtype_mapping=torrent_df_mapping)
+    torrents_by_seconds_downloading_df = df_utils.convert_df_col_dtypes(df=torrents_by_seconds_downloading_df, dtype_mapping=torrent_df_dtypes_mapping)
 
     log.info(f"Top 5 longest downloading torrents:\n{torrents_by_seconds_downloading_df[['name', 'secondsDownloading', 'addedDate', 'startDate', 'activityDate', 'error']].head(5)}")
 

@@ -4,9 +4,9 @@ import typing as t
 from cyclopts import App, Parameter, Group, validators
 import pandas as pd
 from transmissionpy import rpc_client
-from transmissionpy.domain.Transmission import TorrentMetadataIn
-from transmissionpy.core.utils import df_utils
-
+from transmissionpy.domain.Transmission import TorrentMetadataIn, torrent_df_dtypes_mapping
+from transmissionpy.core.utils import df_utils, time_utils
+from datetime import timedelta
 
 torrent_app = App(name="torrent", help="Torrent management commands.")
 
@@ -64,7 +64,11 @@ def list_torrents(status: t.Annotated[str, Parameter(name="status", show_default
     
     converted_torrents: list[TorrentMetadataIn] = rpc_client.utils.convert_multiple_torrents_to_torrentmetadata(torrents=torrents)
     torrents_df: pd.DataFrame = rpc_client.utils.convert_torrents_to_df(torrents=converted_torrents)
-    torrents_df = df_utils.convert_df_datetimes_to_timestamp(df=torrents_df)
+    # torrents_df = df_utils.convert_df_datetimes_to_timestamp(df=torrents_df)
+    torrents_df: pd.DataFrame = df_utils.convert_df_col_dtypes(df=torrents_df, dtype_mapping=torrent_df_dtypes_mapping)
+    
+    ## Convert secondsDownloading column to timedelta
+    torrents_df["timeDownloading"] = torrents_df["secondsDownloading"].apply(time_utils.convert_seconds_to_timedelta)
     
     if isinstance(torrents_df, pd.DataFrame) and torrents_df.empty:
         if status == "all": 
@@ -73,7 +77,9 @@ def list_torrents(status: t.Annotated[str, Parameter(name="status", show_default
             log.warning(f"No {status.title()} torrents found at remote")
         return
     
-    print_df  = torrents_df[["name", "isFinished", "isStalled", "addedDate", "activityDate", "downloadedEver", "error", "eta", "percentDone", "secondsDownloading"]]
+    print_df = torrents_df[["name", "isFinished", "isStalled", "addedDate", "activityDate", "downloadedEver", "error", "percentDone", "timeDownloading"]]
+    ## Convert percentDone column to string for displaying to user
+    print_df["percentDone"] = print_df["percentDone"].apply(lambda x: "{:.2f}%".format(round(x * 100, 2)))
     
     if status == "all":
         log.info(f"All torrent count: {print_df.shape[0]}")
