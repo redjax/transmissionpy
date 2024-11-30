@@ -34,3 +34,18 @@ CLI for transmissionpy Transmission RPC controller client.
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
 ```
+
+### Schedule cron job
+
+On Linux, you can schedule jobs with `cron`, i.e. schedule the [`remove_finished_torrents.sh`](./scripts/shell/remove_finished_torrents.sh) to run every 30 minutes.
+
+- Run `crontab -e` to open the crontab editor
+- Add a line to run the `remove_finished_torrents.sh` script every 30 minutes (note: this assumes the `transmissionpy` repository was cloned to `~/`/`$HOME`)
+
+```shell
+## crontab -e
+
+## Run transmissionpy's remove_finished_torrents.sh script every 30 minutes
+*/30 * * * * cd $HOME/transmissionpy && ./scripts/shell/remove_finished_torrents.sh
+
+```
