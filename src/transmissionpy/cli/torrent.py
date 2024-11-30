@@ -127,7 +127,7 @@ def list_torrents(status: t.Annotated[str, Parameter(name="status", show_default
 
     log.info(f"Listing {status.title()} torrents...")
     
-    match status:
+    match status.lower():
         case "all":
             torrents = rpc_client.list_all_torrents()
         case "finished":
@@ -155,5 +155,55 @@ def list_torrents(status: t.Annotated[str, Parameter(name="status", show_default
     return torrents_df
 
 @torrent_app.command(name=["rm", "remove"])
-def remove_torrent(torrent_id: t.Annotated[int, Parameter(name=["--id"])] | None = None, all: t.Annotated[bool, Parameter(name=["--all", "-a"])] = False):
-    """Remove a torrent, or multiple torrents by state."""
+def remove_torrent(torrent_id: t.Annotated[int, Parameter(name=["--id"])] | None = None, status: t.Annotated[str, Parameter(name=["-s", "--status"])] | None = None):
+    """Remove a torrent, or multiple torrents by state.
+    
+    Params:
+        torrent_id (int): ID of torrent to remove.
+        status (str): State of torrents to remove. Options: ["all", "finished", "stalled"]
+    """
+    if torrent_id:
+        try:
+            rm_torrent = rpc_client.get_torrent_by_id(torrent_id=torrent_id)
+            log.debug(f"Found torrent: {rm_torrent.name}")
+        except Exception as exc:
+            msg = f"({type(exc)}) Error getting torrent by ID '{torrent_id}'. Details: {exc}"
+            log.error(msg)
+            
+            return
+        
+        log.info(f"Deleting torrent: {rm_torrent.name}")
+        try:
+            rpc_client.delete_torrent_by_transmission_id(torrent_id=torrent_id)
+            log.success(f"Deleted torrent [id: {torrent_id}]: {rm_torrent.name}")
+        except Exception as exc:
+            msg = f"({type(exc)} Error deleting torrent '{rm_torrent.name}'. Details: {exc})"
+            log.error(msg)
+            
+            raise exc
+        
+    if status:
+        log.info(f"Getting list of {status.title()} torrents...")
+        
+        match status.lower():
+            case "all":
+                torrents = rpc_client.list_all_torrents()
+            case "finished":
+                torrents = rpc_client.list_finished_torrents()
+            case "stalled":
+                torrents = rpc_client.list_stalled_torrents()
+
+        if torrents is None or len(torrents) == 0:
+            log.warning("No torrents found at remote")
+            return
+        
+        for torrent in torrents:
+            log.info(f"Deleting torrent: {torrent.name}")
+            try:
+                rpc_client.delete_torrents_by_transmission_id(torrent_ids=torrent.id)
+                log.success(f"Deleted torrent [id: {torrent.id}]: {torrent.name}")
+            except Exception as exc:
+                msg = f"({type(exc)} Error deleting torrent '{torrent.name}'. Details: {exc})"
+                log.error(msg)
+                
+                raise exc

@@ -253,8 +253,11 @@ class TransmissionRPCController(AbstractContextManager):
             self.logger.error(msg)
             raise exc
 
-    def delete_torrent_by_id(self, torrent_id: int | str, remove_files: bool = False) -> bool:
+    def delete_torrent_by_id(self, torrent_id: int | str | list[t.Union[str, int]], remove_files: bool = False) -> bool:
         """Delete a torrent by passing the torrent ID."""
+        if not isinstance(torrent_id, list):
+            torrent_id = [torrent_id]
+
         try:
             self.logger.info(f"Deleting torrent with ID '{torrent_id}'")
 

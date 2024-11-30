@@ -14,5 +14,7 @@ from .methods import (
     start_torrent,
     stop_torrent,
     write_torrent_to_json,
+    get_torrent_by_id,
+    delete_torrents_by_transmission_id
 )
 from .snapshot import SnapshotManager

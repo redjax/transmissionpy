@@ -46,6 +46,42 @@ def write_torrent_to_json(torrent: Torrent, output: str):
         raise exc
 
 
+def get_torrent_by_id(torrent_id: int, transmission_settings: TransmissionClientSettings = transmission_settings) -> Torrent:
+    """Retrieve a torrent by its ID.
+    
+    Params:
+        torrent_id (int): The ID of the torrent to retrieve.
+        transmission_settings (TransmissionClientSettings): The transmission settings to use.
+        
+    Returns:
+        transmission_rpc.Torrent: The torrent object.
+
+    """
+    try:
+        transmission_controller: TransmissionRPCController = (
+            transmission_lib.get_transmission_controller(
+                transmission_settings=transmission_settings
+            )
+        )
+    except Exception as exc:
+        msg = f"({type(exc)}) Error getting TransmissionRPCController. Details: {exc}"
+        log.error(msg)
+
+        raise exc
+    
+    log.debug(f"Getting torrent by ID: '{torrent_id}'")
+    try:
+        with transmission_controller as torrent_ctl:
+            torrent: Torrent = torrent_ctl.get_single_torrent(torrent_id=torrent_id)
+
+        return torrent
+
+    except Exception as exc:
+        msg = f"({type(exc)}) Error getting torrent by ID: {torrent_id}. Details: {exc}"
+        log.error(msg)
+
+        return
+
 def list_all_torrents(
     transmission_settings: TransmissionClientSettings = transmission_settings,
 ):
@@ -197,7 +233,7 @@ def delete_torrent(torrent: Torrent, transmission_settings: TransmissionClientSe
         raise exc
     
 
-def delete_torrent_by_transmission_id(torrent_id: int, transmission_settings: TransmissionClientSettings = transmission_settings, remove_files: bool = False):
+def delete_torrent_by_transmission_id(torrent_id: str | int, transmission_settings: TransmissionClientSettings = transmission_settings, remove_files: bool = False):
     try:
         transmission_controller: TransmissionRPCController = (
             transmission_lib.get_transmission_controller(transmission_settings=transmission_settings)
@@ -218,6 +254,30 @@ def delete_torrent_by_transmission_id(torrent_id: int, transmission_settings: Tr
 
         raise exc
 
+
+def delete_torrents_by_transmission_id(torrent_ids: list[t.Union[str, int]], transmission_settings: TransmissionClientSettings = transmission_settings, remove_files: bool = False):
+    if not isinstance(torrent_ids, list):
+        torrent_ids = [torrent_ids]
+
+    try:
+        transmission_controller: TransmissionRPCController = (
+            transmission_lib.get_transmission_controller(transmission_settings=transmission_settings)
+        )
+    except Exception as exc:
+        msg = f"({type(exc)}) Error getting TransmissionRPCController. Details: {exc}"
+        log.error(msg)
+
+        raise exc
+    
+    log.info(f"Deleting torrents by IDs: '{torrent_ids}'")
+    try:
+        with transmission_controller as torrent_ctl:
+            torrent_ctl.delete_torrent_by_id(torrent_id=torrent_ids, remove_files=remove_files)
+    except Exception as exc:
+        msg = f"({type(exc)}) Error deleting torrents by IDs: '{torrent_ids}'. Details: {exc}"
+        log.error(msg)
+
+        raise exc
 
 def snapshot_torrents(transmission_settings: TransmissionClientSettings = transmission_settings) -> list[Torrent]:
     all_torrents: list[Torrent] = list_all_torrents(transmission_settings=transmission_settings)
