@@ -1,7 +1,7 @@
 [project]
 name = "transmissionpy"
 version = "0.1.0"
-description = "Add your description here"
+description = "Python CLI for managing remote Transmission client via RPC."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
