@@ -8,6 +8,7 @@ from .__methods import (
     convert_pq_to_csv,
     count_df_rows,
     get_oldest_newest,
+    hide_df_index,
     load_csv,
     load_json,
     load_pq,
@@ -18,5 +19,4 @@ from .__methods import (
     save_pq,
     set_pandas_display_opts,
     sort_df_by_col,
-    hide_df_index
 )

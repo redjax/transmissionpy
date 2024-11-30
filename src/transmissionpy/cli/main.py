@@ -3,13 +3,13 @@ from __future__ import annotations
 import sys
 import typing as t
 
-from .torrent import torrent_app
 from transmissionpy.core.utils import df_utils
 
-import pandas as pd
+from .torrent import torrent_app
 
 from cyclopts import App, Group, Parameter
 from loguru import logger as log
+import pandas as pd
 
 app = App(name="transmissionpy_cli", help="CLI for transmissionpy Transmission RPC controller client.")
 

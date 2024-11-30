@@ -6,6 +6,8 @@ from .methods import (
     delete_oldest_torrents,
     delete_torrent,
     delete_torrent_by_transmission_id,
+    delete_torrents_by_transmission_id,
+    get_torrent_by_id,
     list_all_torrents,
     list_finished_torrents,
     list_paused_torrents,
@@ -14,7 +16,5 @@ from .methods import (
     start_torrent,
     stop_torrent,
     write_torrent_to_json,
-    get_torrent_by_id,
-    delete_torrents_by_transmission_id
 )
 from .snapshot import SnapshotManager
