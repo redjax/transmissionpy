@@ -263,7 +263,14 @@ class TransmissionRPCController(AbstractContextManager):
 
             # Assuming `self.client.remove_torrent()` is the method to delete torrents
             # If 'remove_files' is True, pass that flag to remove the data
-            result = self.client.remove_torrent(torrent_id, delete_data=remove_files)
+            
+            try:
+                result = self.client.remove_torrent(torrent_id, delete_data=remove_files)
+            except Exception as exc:
+                msg = f"({type(exc)}) Error deleting torrent by ID: {torrent_id}. Details: {exc}"
+                log.error(msg)
+                
+                raise exc
             
             if result:
                 self.logger.info(f"Successfully deleted torrent with ID '{torrent_id}'")
